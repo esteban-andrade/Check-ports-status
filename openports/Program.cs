@@ -41,8 +41,10 @@ namespace openports
         public static async Task RunPortScanAsync()
         {
             // do a specific range
-            Console.WriteLine("> Checking ports 75-85 on localhost...\n");
-            PortScanner cps = new PortScanner("127.0.0.1", 81, 86);
+            int port_start = 80;
+            int port_end = 90;
+            Console.WriteLine("Checking ports "+ port_start+" to "+port_end+ " on localhost...\n");
+            PortScanner cps = new PortScanner("127.0.0.1", port_start, port_end);
 
             var progress = new Progress<PortScanner.PortScanResult>();
             progress.ProgressChanged += (sender, args) =>
@@ -105,9 +107,7 @@ namespace openports
 
         private void SetupLists()
         {
-            // set up lists with capacity to hold half of range
-            // since we can't know how many ports are going to be open
-            // so we compromise and allocate enough for half
+         
 
             // rangeCount is max - min + 1
             int rangeCount = (MaxPort - MinPort) + 1;
@@ -150,6 +150,9 @@ namespace openports
         private async Task<bool> IsPortOpenAsync(int port)
         {
             Socket socket = null;
+             socket = new Socket(AddressFamily.InterNetwork, SocketType
+                    .Stream, ProtocolType.Tcp);
+
 
             try
             {
@@ -158,6 +161,7 @@ namespace openports
                     .Stream, ProtocolType.Tcp);
 
                 // connect
+                
                 await Task.Run(() => socket.Connect(Host, port));
 
                 return true;
